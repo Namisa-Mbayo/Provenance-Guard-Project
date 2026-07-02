@@ -1,0 +1,35 @@
+[
+  {
+    "content_id": "content_4ed8732f999b",
+    "user_id": "test-user-1",
+    "timestamp": "2026-07-02T08:53:17.082445+00:00",
+    "text": "The sun dipped below the horizon, painting the sky in hues of amber and rose. I sat on the porch with a cup of tea, listening to the quiet rhythm of the evening settle around me.",
+    "attribution": "uncertain",
+    "confidence": 0.4,
+    "llm_score": 0.4,
+    "llm_reason": "The text's poetic language and serene tone could be characteristic of either human or AI writing, making it difficult to determine the author with certainty.",
+    "status": "classified"
+  },
+  {
+    "content_id": "content_c6f42413e702",
+    "user_id": "test-user-2",
+    "timestamp": "2026-07-02T09:02:35.019094+00:00",
+    "text": "The sun dipped below the horizon, painting the sky in hues of amber and rose. I sat on the porch with a cup of tea, listening to the quiet rhythm of the evening settle around me.",
+    "attribution": "uncertain",
+    "confidence": 0.4,
+    "llm_score": 0.4,
+    "llm_reason": "The text's poetic language and serene tone could be characteristic of either human or AI writing.",
+    "status": "classified"
+  },
+  {
+    "content_id": "content_ff7119871931",
+    "user_id": "test-user-3",
+    "timestamp": "2026-07-02T09:14:29.360969+00:00",
+    "text": "In todays rapidly evolving digital landscape, creators must navigate new tools, changing audience expectations, and questions of authenticity. This piece explores how technology reshapes creative expression while raising important concerns about transparency.",
+    "attribution": "uncertain",
+    "confidence": 0.6,
+    "llm_score": 0.6,
+    "llm_reason": "The text's polished tone and lack of personal touch could suggest AI-generation, but its thematic complexity and nuanced ideas are also consistent with human authorship.",
+    "status": "classified"
+  }
+]

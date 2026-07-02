@@ -1,6 +1,8 @@
 import json
 import os
 import uuid
+import re
+import statistics
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -132,6 +134,121 @@ Submitted text:
         }
 
 
+# ── second detection signal: stylometric attribution ───────────────────────────────────
+
+def clamp(value: float, minimum: float = 0.0, maximum: float = 1.0) -> float:
+    """
+    Keep a numeric value inside the 0 to 1 range.
+    """
+    return max(minimum, min(maximum, value))
+
+
+def calculate_stylometric_signal(text: str) -> dict:
+    """
+    Second detection signal.
+
+    Measures structural writing patterns and returns an AI-likelihood score
+    between 0 and 1.
+
+    Score meaning:
+        0 = structurally more human-like
+        1 = structurally more AI-like
+    """
+    sentences = [
+        sentence.strip()
+        for sentence in re.split(r"(?<=[.!?])\s+", text.strip())
+        if sentence.strip()
+    ]
+
+    words = re.findall(r"\b[a-zA-Z']+\b", text.lower())
+    punctuation_marks = re.findall(r"[,.!?;:—-]", text)
+
+    word_count = len(words)
+    unique_word_count = len(set(words))
+
+    if word_count == 0:
+        return {
+            "score": 0.5,
+            "features": {
+                "sentence_length_variance": 0,
+                "type_token_ratio": 0,
+                "punctuation_density": 0,
+                "average_sentence_length": 0,
+            },
+            "reason": "Text had no usable words for stylometric analysis."
+        }
+
+    sentence_lengths = [
+        len(re.findall(r"\b[a-zA-Z']+\b", sentence.lower()))
+        for sentence in sentences
+    ]
+
+    if len(sentence_lengths) > 1:
+        sentence_length_variance = statistics.pvariance(sentence_lengths)
+    else:
+        sentence_length_variance = 0
+
+    type_token_ratio = unique_word_count / word_count
+    punctuation_density = len(punctuation_marks) / max(len(text), 1)
+    average_sentence_length = sum(sentence_lengths) / max(len(sentence_lengths), 1)
+
+    # Heuristic scoring:
+    # AI-like writing often has more uniform sentence lengths,
+    # more predictable vocabulary, and less expressive punctuation variation.
+    variance_score = 1 - clamp(sentence_length_variance / 80)
+    ttr_score = clamp((0.65 - type_token_ratio) / 0.40)
+    punctuation_score = clamp((0.04 - punctuation_density) / 0.04)
+    avg_sentence_score = 1 - clamp(abs(average_sentence_length - 18) / 18)
+
+    stylometric_score = (
+        0.35 * variance_score
+        + 0.30 * ttr_score
+        + 0.20 * punctuation_score
+        + 0.15 * avg_sentence_score
+    )
+
+    stylometric_score = clamp(stylometric_score)
+
+    return {
+        "score": round(stylometric_score, 4),
+        "features": {
+            "sentence_length_variance": round(sentence_length_variance, 4),
+            "type_token_ratio": round(type_token_ratio, 4),
+            "punctuation_density": round(punctuation_density, 4),
+            "average_sentence_length": round(average_sentence_length, 4),
+        },
+        "reason": "Stylometric score based on sentence length variance, vocabulary diversity, punctuation density, and average sentence length."
+    }
+
+
+def combine_signal_scores(llm_score: float, stylometric_score: float) -> float:
+    """
+    Combine LLM and stylometric signals according to the planning spec.
+
+    The LLM signal is weighted more heavily because it can interpret meaning,
+    tone, and context. The stylometric signal adds independent structural evidence.
+    """
+    final_score = (0.65 * llm_score) + (0.35 * stylometric_score)
+    return round(clamp(final_score), 4)
+
+
+def score_to_attribution(score: float) -> str:
+    """
+    Convert final AI-likelihood score into one of three attribution labels.
+
+    0.00 to 0.24 = likely_human
+    0.25 to 0.74 = uncertain
+    0.75 to 1.00 = likely_ai
+    """
+    if score >= 0.75:
+        return "likely_ai"
+
+    if score <= 0.24:
+        return "likely_human"
+
+    return "uncertain"
+
+
 # ── scoring helpers ───────────────────────────────────────────────────────────
 
 def score_to_attribution(score: float) -> str:
@@ -198,19 +315,34 @@ def submit():
 
     llm_result = classify_with_llm(text)
     llm_score = llm_result["score"]
-    attribution = llm_result["attribution"]
-    confidence = llm_score
+
+    stylometric_result = calculate_stylometric_signal(text)
+    stylometric_score = stylometric_result["score"]
+
+    combined_score = combine_signal_scores(
+        llm_score=llm_score,
+        stylometric_score=stylometric_score,
+    )
+
+    attribution = score_to_attribution(combined_score)
+    confidence = combined_score
     label = make_placeholder_label(attribution)
 
-    response_body = {
-        "content_id": content_id,
-        "attribution": attribution,
-        "confidence": confidence,
-        "label": label,
+    response_data = {
+    "content_id": content_id,
+    "attribution": attribution,
+    "confidence": confidence,
+    "label": label,
+    "signals": {
         "llm_score": llm_score,
         "llm_reason": llm_result["reason"],
-        "status": "classified",
-    }
+        "stylometric_score": stylometric_score,
+        "stylometric_features": stylometric_result["features"],
+        "stylometric_reason": stylometric_result["reason"],
+        "combined_score": combined_score,
+    },
+    "status": "classified",
+}
 
     log_entry = {
         "content_id": content_id,
@@ -221,12 +353,16 @@ def submit():
         "confidence": confidence,
         "llm_score": llm_score,
         "llm_reason": llm_result["reason"],
+        "stylometric_score": stylometric_score,
+        "stylometric_features": stylometric_result["features"],
+        "stylometric_reason": stylometric_result["reason"],
+        "combined_score": combined_score,
         "status": "classified",
     }
 
     append_log_entry(log_entry)
 
-    return jsonify(response_body), 200
+    return jsonify(response_data), 200
 
 
 @app.get("/log")
