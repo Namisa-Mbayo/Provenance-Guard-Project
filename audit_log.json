@@ -31,5 +31,25 @@
     "llm_score": 0.6,
     "llm_reason": "The text's polished tone and lack of personal touch could suggest AI-generation, but its thematic complexity and nuanced ideas are also consistent with human authorship.",
     "status": "classified"
+  },
+  {
+    "content_id": "content_520b0f9d644e",
+    "user_id": "test-user-1",
+    "timestamp": "2026-07-02T10:03:24.049333+00:00",
+    "text": "Artificial intelligence represents a transformative paradigm shift in modern society. It is important to note that while the benefits of AI are numerous, it is equally essential to consider the ethical implications. Furthermore, stakeholders across various sectors must collaborate to ensure responsible deployment.",
+    "attribution": "uncertain",
+    "confidence": 0.6163,
+    "llm_score": 0.7,
+    "llm_reason": "The text features overly formal and generic language, which is a common trait of AI-generated content.",
+    "stylometric_score": 0.4608,
+    "stylometric_features": {
+      "sentence_length_variance": 29.5556,
+      "type_token_ratio": 0.8837,
+      "punctuation_density": 0.0159,
+      "average_sentence_length": 14.3333
+    },
+    "stylometric_reason": "Stylometric score based on sentence length variance, vocabulary diversity, punctuation density, and average sentence length.",
+    "combined_score": 0.6163,
+    "status": "classified"
   }
 ]
