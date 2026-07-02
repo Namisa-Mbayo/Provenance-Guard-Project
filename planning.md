@@ -30,7 +30,7 @@ If a user disagrees with the classification decision, they can submit an appeal 
 The LLM can be affected by what the text is about and how it’s written. A clean, polished human essay might seem AI-written, while messy AI writing might seem human.
 
 **Blind spot:**
-The LLM can be influenced by the topic, genre, or style of the text. A polished human-written essay may look AI-like, while messy AI-generated text may look human.
+The LLM can be influenced by the topic, genre, or style of the text. A polished human-written essay could look like AI, while messy AI-generated text could look more human.
 
 ### Signal 2: Stylometric Heuristics
 
@@ -46,7 +46,48 @@ The LLM can be influenced by the topic, genre, or style of the text. A polished 
 Stylometric features measure the structure of writing, not its meaning. That gives the system a separate signal that uses different reasoning than the LLM classifier.
 
 **Blind spot:**
-Stylometric heuristics cannot tell you the meaning of a text. Some people naturally write in a consistent, polished, or repetitive way. And AI generated text can always be edited to sound more human.
+Stylometric heuristics cannot tell you the meaning or intent of a text. Some people naturally write in a consistent, polished, or repetitive way. And AI generated text can always be edited to sound more human.
+
+### Signal Combination
+
+The system combines both signals into an one score.
+
+`final_score = (0.65 * llm_score) + (0.35 * stylometric_score)`
+
+I chose to give the LLM signal more weight because it can evaluate meaning, context, and tone. The stylometric signal is still useful because it catches writing patterns that the LLM might miss.
+
+## Uncertainty representation
+
+A score closer to 1 means the text looks more like AI writing. A score closer to 0 means it looks more like human writing. A score near 0.5 means the system is unsure. For example, a score of 0.51 should not be labeled `likely_ai`. It should be labeled `uncertain` because the score is too close to the middle. The uncertainty threshold will be between 0.25 to 0.74, because AI attribution can be unreliable and false positives can harm human users. The system needs a high enough score to be confident in its decison.
+
+**Example:**
+
+| Score | Result | Explanation |
+| - | - | - |
+| 0.12 | `likely_human` | Strong human-writing signals |
+| 0.51 | `uncertain` | Mixed signals, near the middle |
+| 0.62 | `uncertain` | Some AI-generation signals, but not enough for a confident label |
+| 0.91 | `likely_ai` | Strong AI-generation signals |
+
+## Transparency Label Design
+
+The transparency label is the plain-language text shown to users on the platform.
+
+| Label | Message |
+| - | - |
+| High Confidence AI Label | "This content shows strong signals of AI generation. It may have been created or heavily assisted by AI. Creators may appeal this label if they believe it is incorrect." |
+| Uncertain Label | "This content has mixed signals. We cannot confidently determine whether it was human-written or AI-generated." |
+| High Confidence Human Label | "This content shows strong signs of human writing. No major AI generation signals were detected." |
+
+## Anticipated Edge Cases
+
+### Edge Case 1: Polished human writing
+
+Human-written text can be polished, structured, and grammatically correct. The LLM signal and stylometric signal might score it as `likely_ai` if it has little to no messiness or variation.
+
+### Edge Case 3: AI text prompted to sound casual
+
+AI-generated text can be prompted to include slang or informal phrasing. This could fool the stylometric signal into scoring it as `likely_human`.
 
 ## API Surface
 
@@ -57,18 +98,20 @@ Receives a text submission and returns an attribution decision
 {
   "user_id": "user_123",
 
-  "content": "Submitted text goes here."
+  "content": "User submitted text."
 }
 
 **Response Data:**
 {
   "content_id": "content_123",
 
-  "attribution": "likely_ai | likely_human | uncertain",
+  "content": "User submitted text."
+
+  "attribution": "likely_ai",
 
   "confidence": 0.82,
 
-  "transparency_label": "This content shows strong signals of AI generation. It may have been created or heavily assisted by AI. Creators may appeal this label if they believe it is incorrect.",
+  "transparency_label": "This content shows strong signals of AI generation. It may have been created or heavily assisted by AI. Creators may appeal this decision if they believe it is incorrect.",
 
   "signals": {
     "llm_score": 0.87,
@@ -85,7 +128,7 @@ Accepts an appeal for a previous classification.
 **Request Data:**
 {
   "content_id": "generated-content-id",
-  "creator_reason": "I wrote this myself and can provide drafts or notes."
+  "user_reason": "I wrote this myself and can provide drafts or notes."
 }
 
 **Response Data:**
@@ -95,3 +138,50 @@ Accepts an appeal for a previous classification.
   "message": "Appeal received and logged for review."
 }
 
+**`GET /log`**
+Returns recent audit log entries.
+
+**Response Data:**
+{
+  "entries": [
+    {
+      "content_id": "content_abc123",
+      "timestamp": "2026-07-02T12:00:00Z",
+      "creator_id": "creator_123",
+      "attribution": "likely_ai",
+      "confidence": 0.82,
+      "llm_score": 0.87,
+      "stylometric_score": 0.72,
+      "status": "under_review",
+      "appeal": {
+        "reason": "I wrote this myself and can provide drafts showing my process.",
+        "timestamp": "2026-07-02T12:05:00Z"
+      }
+    }
+  ]
+}
+
+**`GET /health`**
+Returns a simple health check confirming that the API is running.
+
+**Response Data:**
+{
+  "status": "ok"
+}
+
+## AI Tool
+
+**Milestone 3: Submission endpoint and first signal**
+I will give Claude my Architecture, API Surface, and Detection Signal sections. I will ask it to generate a Flask app skeleton with `POST /submit`, `GET /health`, input validation, and the first signal function using Groq.
+
+I will verify the output by testing `POST /submit` directly before adding the second signal. I will check that the endpoint accepts text, rejects missing or too-short input, calls the LLM signal, and returns structured JSON.
+
+**Milestone 4: Second signal and confidence scoring**
+I will give the AI tool my Detection Signals, Signal Combination, Uncertainty Representation, and Architecture sections. I will ask it to implement the stylometric heuristic signal and the score  formula.
+
+I will verify the output by testing `likely_human`, `likely_ai`, and `uncertain` text samples. I will check that a score near 0.5 produces the `uncertain` label instead of `likely_ai` or `likely_human`.
+
+**Milestone 5: Production layer**
+I will give the AI tool my Transparency Label Design, Appeals Workflow, API Surface, and Architecture sections. I will ask it to implement the transparency label function, audit logging, `POST /appeal`, `GET /log`, and rate limiting.
+
+I will verify the output by testing all three transparency label variants, submitting an appeal, checking that the content status updates to `under_review`. Then, I will then confirm that the audit log contains three entries along with their signal scores, confidence, labels, and appeal information.
