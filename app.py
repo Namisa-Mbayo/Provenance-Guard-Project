@@ -5,6 +5,8 @@ import re
 import statistics
 from datetime import datetime, timezone
 from pathlib import Path
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request
@@ -14,6 +16,12 @@ from groq import Groq
 load_dotenv()
 
 app = Flask(__name__)
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=[],
+    storage_uri="memory://",
+)
 
 LOG_PATH = Path("audit_log.json")
 MIN_TEXT_LENGTH = 50
@@ -53,6 +61,22 @@ def append_log_entry(entry: dict) -> None:
     entries.append(entry)
     save_log(entries)
 
+
+def update_log_entry(content_id: str, updated_entry: dict) -> bool:
+    """
+    Replace an existing audit log entry by content_id.
+
+    Returns True if an entry was updated, False otherwise.
+    """
+    entries = load_log()
+
+    for index, entry in enumerate(entries):
+        if entry.get("content_id") == content_id:
+            entries[index] = updated_entry
+            save_log(entries)
+            return True
+
+    return False
 
 # ── first detection signal: LLM attribution ───────────────────────────────────
 
@@ -265,18 +289,27 @@ def score_to_attribution(score: float) -> str:
     return "uncertain"
 
 
-def make_placeholder_label(attribution: str) -> str:
+def generate_transparency_label(attribution: str) -> str:
     """
-    Placeholder label for Milestone 3.
-    Milestone 5 will replace this with final transparency label variants.
+    Convert the attribution result into the exact user-facing transparency label.
     """
     if attribution == "likely_ai":
-        return "Placeholder: This content shows signs of AI generation."
+        return (
+            "This content shows strong signals of AI generation. "
+            "It may have been created or heavily assisted by AI. "
+            "Users may appeal this label if they believe it is incorrect."
+        )
 
     if attribution == "likely_human":
-        return "Placeholder: This content shows signs of human authorship."
+        return (
+            "This content shows strong signs of human writing. "
+            "No major AI generation signals were detected."
+        )
 
-    return "Placeholder: Authorship signals are mixed or uncertain."
+    return (
+        "This content has mixed signals. "
+        "We cannot confidently determine whether it was human-written or AI-generated."
+    )
 
 
 # ── routes ────────────────────────────────────────────────────────────────────
@@ -285,13 +318,10 @@ def make_placeholder_label(attribution: str) -> str:
 def health():
     return jsonify({"status": "ok"})
 
-
 @app.post("/submit")
+@limiter.limit("10 per minute; 100 per day")
 def submit():
     data = request.get_json(silent=True) or {}
-
-    # Milestone says use "text". This also accepts "content" for compatibility
-    # with the earlier planning.md draft.
     text = data.get("text") or data.get("content")
     user_id = data.get("user_id")
 
@@ -326,7 +356,7 @@ def submit():
 
     attribution = score_to_attribution(combined_score)
     confidence = combined_score
-    label = make_placeholder_label(attribution)
+    label = generate_transparency_label(attribution)
 
     response_data = {
     "content_id": content_id,
@@ -358,11 +388,67 @@ def submit():
         "stylometric_reason": stylometric_result["reason"],
         "combined_score": combined_score,
         "status": "classified",
+        "appeal": None,
+        "appeal_reasoning": None,
     }
 
     append_log_entry(log_entry)
 
     return jsonify(response_data), 200
+
+@app.post("/appeal")
+def appeal():
+    data = request.get_json(silent=True) or {}
+
+    content_id = data.get("content_id")
+    creator_reasoning = data.get("creator_reasoning")
+
+    if not content_id:
+        return jsonify({
+            "error": "Missing required field: content_id"
+        }), 400
+
+    if not creator_reasoning or not isinstance(creator_reasoning, str):
+        return jsonify({
+            "error": "Missing required field: creator_reasoning"
+        }), 400
+
+    entries = load_log()
+    matching_entry = None
+
+    for entry in entries:
+        if entry.get("content_id") == content_id:
+            matching_entry = entry
+            break
+
+    if matching_entry is None:
+        return jsonify({
+            "error": f"No audit log entry found for content_id: {content_id}"
+        }), 404
+
+    appeal_timestamp = datetime.now(timezone.utc).isoformat()
+
+    matching_entry["status"] = "under_review"
+    matching_entry["appeal_reasoning"] = creator_reasoning
+    matching_entry["appeal"] = {
+        "creator_reasoning": creator_reasoning,
+        "appeal_timestamp": appeal_timestamp,
+        "status": "under_review",
+    }
+
+    updated = update_log_entry(content_id, matching_entry)
+
+    if not updated:
+        return jsonify({
+            "error": "Appeal could not be saved."
+        }), 500
+
+    return jsonify({
+        "content_id": content_id,
+        "status": "under_review",
+        "message": "Appeal received and logged for review.",
+        "appeal_reasoning": creator_reasoning,
+    }), 200
 
 
 @app.get("/log")

@@ -8,7 +8,13 @@
     "confidence": 0.4,
     "llm_score": 0.4,
     "llm_reason": "The text's poetic language and serene tone could be characteristic of either human or AI writing, making it difficult to determine the author with certainty.",
-    "status": "classified"
+    "status": "under_review",
+    "appeal_reasoning": "I wrote this myself from personal experience and can provide drafts.",
+    "appeal": {
+      "creator_reasoning": "I wrote this myself from personal experience and can provide drafts.",
+      "appeal_timestamp": "2026-07-02T10:59:45.472671+00:00",
+      "status": "under_review"
+    }
   },
   {
     "content_id": "content_c6f42413e702",
@@ -34,7 +40,7 @@
   },
   {
     "content_id": "content_520b0f9d644e",
-    "user_id": "test-user-1",
+    "user_id": "test-user-4",
     "timestamp": "2026-07-02T10:03:24.049333+00:00",
     "text": "Artificial intelligence represents a transformative paradigm shift in modern society. It is important to note that while the benefits of AI are numerous, it is equally essential to consider the ethical implications. Furthermore, stakeholders across various sectors must collaborate to ensure responsible deployment.",
     "attribution": "uncertain",
@@ -51,5 +57,247 @@
     "stylometric_reason": "Stylometric score based on sentence length variance, vocabulary diversity, punctuation density, and average sentence length.",
     "combined_score": 0.6163,
     "status": "classified"
+  },
+  {
+    "content_id": "content_befcaff5c8cb",
+    "user_id": "ratelimit-test",
+    "timestamp": "2026-07-02T11:03:01.500092+00:00",
+    "text": "This is a test submission for rate limit testing purposes only. It is intentionally long enough to pass validation and trigger the endpoint repeatedly.",
+    "attribution": "uncertain",
+    "confidence": 0.4628,
+    "llm_score": 0.4,
+    "llm_reason": "The text lacks distinctive stylistic features, making it difficult to determine its origin with confidence.",
+    "stylometric_score": 0.5794,
+    "stylometric_features": {
+      "sentence_length_variance": 1,
+      "type_token_ratio": 0.9583,
+      "punctuation_density": 0.0132,
+      "average_sentence_length": 12.0
+    },
+    "stylometric_reason": "Stylometric score based on sentence length variance, vocabulary diversity, punctuation density, and average sentence length.",
+    "combined_score": 0.4628,
+    "status": "classified",
+    "appeal": null,
+    "appeal_reasoning": null
+  },
+  {
+    "content_id": "content_53ef38ee7125",
+    "user_id": "ratelimit-test",
+    "timestamp": "2026-07-02T11:04:43.119949+00:00",
+    "text": "This is a test submission for rate limit testing purposes only. It is intentionally long enough to pass validation and trigger the endpoint repeatedly.",
+    "attribution": "uncertain",
+    "confidence": 0.4628,
+    "llm_score": 0.4,
+    "llm_reason": "The text lacks distinctive stylistic features, making it difficult to determine its origin with confidence.",
+    "stylometric_score": 0.5794,
+    "stylometric_features": {
+      "sentence_length_variance": 1,
+      "type_token_ratio": 0.9583,
+      "punctuation_density": 0.0132,
+      "average_sentence_length": 12.0
+    },
+    "stylometric_reason": "Stylometric score based on sentence length variance, vocabulary diversity, punctuation density, and average sentence length.",
+    "combined_score": 0.4628,
+    "status": "classified",
+    "appeal": null,
+    "appeal_reasoning": null
+  },
+  {
+    "content_id": "content_4e658ce0477a",
+    "user_id": "ratelimit-test",
+    "timestamp": "2026-07-02T11:04:43.769791+00:00",
+    "text": "This is a test submission for rate limit testing purposes only. It is intentionally long enough to pass validation and trigger the endpoint repeatedly.",
+    "attribution": "uncertain",
+    "confidence": 0.4628,
+    "llm_score": 0.4,
+    "llm_reason": "The text lacks distinctive stylistic features, making it difficult to determine its origin with confidence.",
+    "stylometric_score": 0.5794,
+    "stylometric_features": {
+      "sentence_length_variance": 1,
+      "type_token_ratio": 0.9583,
+      "punctuation_density": 0.0132,
+      "average_sentence_length": 12.0
+    },
+    "stylometric_reason": "Stylometric score based on sentence length variance, vocabulary diversity, punctuation density, and average sentence length.",
+    "combined_score": 0.4628,
+    "status": "classified",
+    "appeal": null,
+    "appeal_reasoning": null
+  },
+  {
+    "content_id": "content_0b876f5738a6",
+    "user_id": "ratelimit-test",
+    "timestamp": "2026-07-02T11:04:44.301746+00:00",
+    "text": "This is a test submission for rate limit testing purposes only. It is intentionally long enough to pass validation and trigger the endpoint repeatedly.",
+    "attribution": "uncertain",
+    "confidence": 0.4628,
+    "llm_score": 0.4,
+    "llm_reason": "The text lacks distinctive stylistic features, making it difficult to determine its origin with confidence.",
+    "stylometric_score": 0.5794,
+    "stylometric_features": {
+      "sentence_length_variance": 1,
+      "type_token_ratio": 0.9583,
+      "punctuation_density": 0.0132,
+      "average_sentence_length": 12.0
+    },
+    "stylometric_reason": "Stylometric score based on sentence length variance, vocabulary diversity, punctuation density, and average sentence length.",
+    "combined_score": 0.4628,
+    "status": "classified",
+    "appeal": null,
+    "appeal_reasoning": null
+  },
+  {
+    "content_id": "content_8d41abe97ef9",
+    "user_id": "ratelimit-test",
+    "timestamp": "2026-07-02T11:04:45.050465+00:00",
+    "text": "This is a test submission for rate limit testing purposes only. It is intentionally long enough to pass validation and trigger the endpoint repeatedly.",
+    "attribution": "uncertain",
+    "confidence": 0.4628,
+    "llm_score": 0.4,
+    "llm_reason": "The text lacks distinctive stylistic features, making it difficult to determine its origin with confidence.",
+    "stylometric_score": 0.5794,
+    "stylometric_features": {
+      "sentence_length_variance": 1,
+      "type_token_ratio": 0.9583,
+      "punctuation_density": 0.0132,
+      "average_sentence_length": 12.0
+    },
+    "stylometric_reason": "Stylometric score based on sentence length variance, vocabulary diversity, punctuation density, and average sentence length.",
+    "combined_score": 0.4628,
+    "status": "classified",
+    "appeal": null,
+    "appeal_reasoning": null
+  },
+  {
+    "content_id": "content_3b52212653d7",
+    "user_id": "ratelimit-test",
+    "timestamp": "2026-07-02T11:04:45.642372+00:00",
+    "text": "This is a test submission for rate limit testing purposes only. It is intentionally long enough to pass validation and trigger the endpoint repeatedly.",
+    "attribution": "uncertain",
+    "confidence": 0.4628,
+    "llm_score": 0.4,
+    "llm_reason": "The text lacks distinctive stylistic features, making it difficult to determine its origin with confidence.",
+    "stylometric_score": 0.5794,
+    "stylometric_features": {
+      "sentence_length_variance": 1,
+      "type_token_ratio": 0.9583,
+      "punctuation_density": 0.0132,
+      "average_sentence_length": 12.0
+    },
+    "stylometric_reason": "Stylometric score based on sentence length variance, vocabulary diversity, punctuation density, and average sentence length.",
+    "combined_score": 0.4628,
+    "status": "classified",
+    "appeal": null,
+    "appeal_reasoning": null
+  },
+  {
+    "content_id": "content_b9e4e1e5d55f",
+    "user_id": "ratelimit-test",
+    "timestamp": "2026-07-02T11:04:46.225426+00:00",
+    "text": "This is a test submission for rate limit testing purposes only. It is intentionally long enough to pass validation and trigger the endpoint repeatedly.",
+    "attribution": "uncertain",
+    "confidence": 0.4628,
+    "llm_score": 0.4,
+    "llm_reason": "The text lacks distinctive stylistic features, making it difficult to determine its origin with confidence.",
+    "stylometric_score": 0.5794,
+    "stylometric_features": {
+      "sentence_length_variance": 1,
+      "type_token_ratio": 0.9583,
+      "punctuation_density": 0.0132,
+      "average_sentence_length": 12.0
+    },
+    "stylometric_reason": "Stylometric score based on sentence length variance, vocabulary diversity, punctuation density, and average sentence length.",
+    "combined_score": 0.4628,
+    "status": "classified",
+    "appeal": null,
+    "appeal_reasoning": null
+  },
+  {
+    "content_id": "content_172d4e273b63",
+    "user_id": "ratelimit-test",
+    "timestamp": "2026-07-02T11:04:46.854683+00:00",
+    "text": "This is a test submission for rate limit testing purposes only. It is intentionally long enough to pass validation and trigger the endpoint repeatedly.",
+    "attribution": "uncertain",
+    "confidence": 0.4628,
+    "llm_score": 0.4,
+    "llm_reason": "The text lacks distinctive stylistic features, making it difficult to determine its origin with confidence.",
+    "stylometric_score": 0.5794,
+    "stylometric_features": {
+      "sentence_length_variance": 1,
+      "type_token_ratio": 0.9583,
+      "punctuation_density": 0.0132,
+      "average_sentence_length": 12.0
+    },
+    "stylometric_reason": "Stylometric score based on sentence length variance, vocabulary diversity, punctuation density, and average sentence length.",
+    "combined_score": 0.4628,
+    "status": "classified",
+    "appeal": null,
+    "appeal_reasoning": null
+  },
+  {
+    "content_id": "content_1d3beb0a01a7",
+    "user_id": "ratelimit-test",
+    "timestamp": "2026-07-02T11:04:47.520857+00:00",
+    "text": "This is a test submission for rate limit testing purposes only. It is intentionally long enough to pass validation and trigger the endpoint repeatedly.",
+    "attribution": "uncertain",
+    "confidence": 0.4628,
+    "llm_score": 0.4,
+    "llm_reason": "The text lacks distinctive linguistic features that would clearly indicate either human or AI authorship.",
+    "stylometric_score": 0.5794,
+    "stylometric_features": {
+      "sentence_length_variance": 1,
+      "type_token_ratio": 0.9583,
+      "punctuation_density": 0.0132,
+      "average_sentence_length": 12.0
+    },
+    "stylometric_reason": "Stylometric score based on sentence length variance, vocabulary diversity, punctuation density, and average sentence length.",
+    "combined_score": 0.4628,
+    "status": "classified",
+    "appeal": null,
+    "appeal_reasoning": null
+  },
+  {
+    "content_id": "content_1a5c036fcb84",
+    "user_id": "ratelimit-test",
+    "timestamp": "2026-07-02T11:04:48.242544+00:00",
+    "text": "This is a test submission for rate limit testing purposes only. It is intentionally long enough to pass validation and trigger the endpoint repeatedly.",
+    "attribution": "uncertain",
+    "confidence": 0.4628,
+    "llm_score": 0.4,
+    "llm_reason": "The text lacks distinctive stylistic features, making it difficult to determine its origin with confidence.",
+    "stylometric_score": 0.5794,
+    "stylometric_features": {
+      "sentence_length_variance": 1,
+      "type_token_ratio": 0.9583,
+      "punctuation_density": 0.0132,
+      "average_sentence_length": 12.0
+    },
+    "stylometric_reason": "Stylometric score based on sentence length variance, vocabulary diversity, punctuation density, and average sentence length.",
+    "combined_score": 0.4628,
+    "status": "classified",
+    "appeal": null,
+    "appeal_reasoning": null
+  },
+  {
+    "content_id": "content_b4eac038e65b",
+    "user_id": "ratelimit-test",
+    "timestamp": "2026-07-02T11:04:48.889995+00:00",
+    "text": "This is a test submission for rate limit testing purposes only. It is intentionally long enough to pass validation and trigger the endpoint repeatedly.",
+    "attribution": "uncertain",
+    "confidence": 0.4628,
+    "llm_score": 0.4,
+    "llm_reason": "The text lacks distinctive stylistic features, making it difficult to determine its origin with confidence.",
+    "stylometric_score": 0.5794,
+    "stylometric_features": {
+      "sentence_length_variance": 1,
+      "type_token_ratio": 0.9583,
+      "punctuation_density": 0.0132,
+      "average_sentence_length": 12.0
+    },
+    "stylometric_reason": "Stylometric score based on sentence length variance, vocabulary diversity, punctuation density, and average sentence length.",
+    "combined_score": 0.4628,
+    "status": "classified",
+    "appeal": null,
+    "appeal_reasoning": null
   }
 ]

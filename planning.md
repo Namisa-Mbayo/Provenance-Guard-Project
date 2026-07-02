@@ -75,7 +75,7 @@ The transparency label is the plain-language text shown to users on the platform
 
 | Label | Message |
 | - | - |
-| High Confidence AI Label | "This content shows strong signals of AI generation. It may have been created or heavily assisted by AI. Creators may appeal this label if they believe it is incorrect." |
+| High Confidence AI Label | "This content shows strong signals of AI generation. It may have been created or heavily assisted by AI. Users may appeal this label if they believe it is incorrect." |
 | Uncertain Label | "This content has mixed signals. We cannot confidently determine whether it was human-written or AI-generated." |
 | High Confidence Human Label | "This content shows strong signs of human writing. No major AI generation signals were detected." |
 
